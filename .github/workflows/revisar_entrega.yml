@@ -1,0 +1,50 @@
+# ==========================================================================
+#  Revisión automática de entregas — MASDFR
+#  Corre sola en cada Pull Request de los equipos. Revisa la FORMA de la
+#  entrega (carpeta, nombre, título, archivos de más) y que el notebook
+#  corra de principio a fin en el ambiente del curso. No califica contenido.
+#  El resultado aparece en el PR como ✅/❌; el detalle en "Details".
+# ==========================================================================
+name: Revisión de entrega
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read            # solo lectura: el código de los alumnos no puede escribir nada
+
+concurrency:
+  group: revision-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  revisar:
+    # No corre en los PR del profesor
+    if: github.event.pull_request.user.login != github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Descargar el repo con la entrega
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Crear el ambiente del curso (environment.yml)
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: clases/clase_01/environment.yml
+          cache-environment: true
+
+      - name: Revisar la entrega
+        shell: bash -el {0}
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          MPLBACKEND: Agg
+        run: |
+          python -m ipykernel install --user --name python3 > /dev/null
+          python .github/scripts/revisar_entrega.py --base "$BASE_SHA" --head "$HEAD_SHA" --titulo "$PR_TITLE"
