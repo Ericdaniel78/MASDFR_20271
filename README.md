@@ -1,6 +1,8 @@
 # MASDFR_20271
 Repoitorio de códigos para la clase MASDFR de la Factultad de Ciencias semstre 2027-1
 
+# Puse esto en el README para que sepan que es de nuestro equipo (5)
+
 Orden de carptas:
 
 - clases: Son las clases del profesor con los temas de Pricing y Fianzas.

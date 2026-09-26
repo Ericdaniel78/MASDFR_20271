@@ -40,12 +40,12 @@ df = pd.read_parquet("entregas/equipo_XX/inputs/cartera.parquet")
 
 La cartera tiene **muchas columnas**, pero **para esta práctica solo les importan unas cuantas**. Parte del ejercicio es que **identifiquen cuáles sí necesitan** y dejen el resto:
 
-| Necesitas para… | Variable | Qué es |
-|---|---|---|
-| ... | Numero de siniestros | número de siniestros de la póliza en el periodo |
-| ... | Exposición | años-póliza (cuánto tiempo estuvo expuesta) |
-| ... | Monto de sinietro | monto **ground-up** (el daño real) de cada siniestro |
-| ... | Deducible etc. | condiciones de la póliza, para pasar de la severidad real a la que paga la aseguradora |
+| Necesitas para… | Variable             | Qué es                                                                                 |
+| ---------------- | -------------------- | --------------------------------------------------------------------------------------- |
+| ...              | Numero de siniestros | número de siniestros de la póliza en el periodo                                       |
+| ...              | Exposición          | años-póliza (cuánto tiempo estuvo expuesta)                                          |
+| ...              | Monto de sinietro    | monto**ground-up** (el daño real) de cada siniestro                              |
+| ...              | Deducible etc.       | condiciones de la póliza, para pasar de la severidad real a la que paga la aseguradora |
 
 El resto de columnas (factores de riesgo, fechas, etc.) **existen pero no se usan aquí**. En su notebook, digan explícitamente **qué variables eligieron y por qué**.
 
@@ -54,28 +54,35 @@ El resto de columnas (factores de riesgo, fechas, etc.) **existen pero no se usa
 ## 3. Lo que deben hacer
 
 ### a) Exploración de las variables de interés
+
 Describan su ramo y exploren **solo** las variables que importan: la distribución de número de sinsitrsos, exposición y monto de siniestro. Reporten los descriptivos básicos (media, mediana, forma de la cola). No hagan un tour por todo el dataset: enfóquense.
 
 ### b) Severidad
+
 - Ajusten varias distribuciones (lognormal, gamma, Weibull, Pareto…) y **elijan una con criterio**: AIC **y** el comportamiento de la **cola** (no solo el número).
 - Consideren las **transformaciones** de la póliza: distingan la severidad **ground-up** (el daño real) de la que **paga la aseguradora** tras aplicar deducible etc. Recuerden lo de la Sesión 3: ajustar sobre datos ya transformados sesga.
 
 ### c) Frecuencia
+
 - Ajusten **todas** las opciones que vimos —Poisson y binomial negativa— y **diagnostiquen**: índice de dispersión, sobredispersión, exceso de ceros (quasi-Poisson/ZIP a nivel diagnóstico).
 - **Ustedes deciden** cuál queda mejor con base en el diagnóstico; no asuman Poisson de entrada.
 - Usen correctamente la **exposición**: la tasa es total de siniestros entre total de exposición, no un promedio simple.
 
 ### d) Simulación de la pérdida agregada S
+
 Con la severidad y la frecuencia que eligieron, simulen S (el algoritmo de la Sesión 7), en **dos versiones**:
+
 - **S ground-up:** con la severidad del daño real.
 - **S transformada:** aplicando deducible y suma asegurada (lo que realmente paga la aseguradora).
 
 Para cada versión reporten la **distribución de S**, la **prima pura** E[S] y los cuantiles **VaR y TVaR** al 99%. Comparen las dos: **¿cuánto de la pérdida absorbe la póliza?** ¿Cuál es la que sirve para la prima del producto y por qué?
 
 ### e) Validación contra la guía de ramos *(obligatoria)*
+
 Comparen lo que **les salió** con el perfil de mercado de su ramo de la **guía de ramos (Sesión 6)**: rango y cola de la severidad, nivel de frecuencia, distribución sugerida. ¿Su cartera cuadra con el perfil del ramo o hay diferencias? Analicen a qué se deben. Este apartado es parte de la calificación.
 
 ### f) Dos preguntas de introducción
+
 Respondan en el notebook: **¿por qué les interesó este ramo?** y **¿qué coberturas van a trabajar en su producto?**
 
 ---
